@@ -9,13 +9,13 @@ if (!isset($_SESSION['admin_logged_in'])) {
 }
 
 // Fetch polls from the database
-$query = $pdo->query("SELECT * FROM polls");
+$query = $pdo->query("SELECT * FROM polls WHERE status = 'active'");
 $polls = $query->fetchAll(PDO::FETCH_ASSOC);
 
 // Handle delete request
 if (isset($_GET['delete'])) {
     $poll_id = intval($_GET['delete']);
-    $delete_query = $pdo->prepare("DELETE FROM polls WHERE id = ?");
+    $delete_query = $pdo->prepare("UPDATE polls SET status = 'deleted' WHERE id = ?");
     $delete_query->execute([$poll_id]);
     header("Location: index.php"); // Redirect after deletion
     exit();
@@ -132,7 +132,6 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
                 <thead>
                     <tr>
                         <th>Poll Title</th>
-                        <th>Image</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -141,15 +140,8 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
                         <tr>
                             <td><?php echo htmlspecialchars($poll['title']); ?></td>
                             <td>
-                                <?php if (!empty($poll['image'])): ?>
-                                    <img src="../uploads/<?php echo htmlspecialchars($poll['image']); ?>" alt="<?php echo htmlspecialchars($poll['title']); ?>" style="max-width: 100px; max-height: 100px;">
-                                <?php else: ?>
-                                    No Image
-                                <?php endif; ?>
-                            </td>
-                            <td>
                                 <a href="edit_poll.php?id=<?php echo $poll['id']; ?>">Edit</a>
-                                <a href="index.php?delete=<?php echo $poll['id']; ?>" onclick="return confirm('Are you sure?');">Delete</a>
+                                <a href="index.php?delete=<?php echo $poll['id']; ?>" onclick="return confirm('Are you sure you want to delete this poll?');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -159,7 +151,7 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
     </main>
 
     <footer>
-        <p>&copy; <?php echo date('Y'); ?> Your Company Name. All Rights Reserved.</p>
+        <p>&copy; 2024 Online Voting System Admin Panel. All rights reserved.</p>
     </footer>
 </body>
 </html>

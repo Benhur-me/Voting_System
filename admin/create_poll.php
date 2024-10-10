@@ -12,7 +12,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $poll_title = $_POST['title'];
     $candidates = $_POST['candidates'];
-    $candidate_images = $_FILES['candidate_images']; // Get the uploaded files
+    $images = $_FILES['candidate_images']['name'];
 
     // Insert the poll into the database
     $stmt = $pdo->prepare("INSERT INTO polls (title) VALUES (?)");
@@ -22,25 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Insert candidates into the database
     foreach ($candidates as $index => $candidate) {
         $candidate = trim($candidate);
-        $image_name = null;
-
-        if (!empty($candidate) && isset($candidate_images['name'][$index])) {
-            $image = $candidate_images['name'][$index];
-            $image_tmp = $candidate_images['tmp_name'][$index];
-            $upload_dir = '../uploads/';
-            $image_name = basename($image);
-            $upload_file = $upload_dir . $image_name;
-
-            // Move the uploaded file to the target directory
-            if (move_uploaded_file($image_tmp, $upload_file)) {
-                // File upload successful
-            } else {
-                echo "<script>alert('Failed to upload image for candidate: $candidate');</script>";
-            }
-
-            // Insert the candidate into the database
-            $candidate_stmt = $pdo->prepare("INSERT INTO candidates (poll_id, name, image) VALUES (?, ?, ?)"); // Assuming the candidates table has an image column
-            $candidate_stmt->execute([$poll_id, $candidate, $image_name]);
+        $image = $images[$index];
+        if (!empty($candidate)) {
+            // Move uploaded image to the appropriate folder
+            move_uploaded_file($_FILES['candidate_images']['tmp_name'][$index], "../admin/" . $image);
+            $candidate_stmt = $pdo->prepare("INSERT INTO candidates (poll_id, name, image) VALUES (?, ?, ?)");
+            $candidate_stmt->execute([$poll_id, $candidate, $image]);
         }
     }
 
@@ -97,12 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div id="app">
         <h1>Create Poll</h1>
-        <form method="POST" enctype="multipart/form-data"> <!-- Add enctype for file upload -->
+        <form method="POST" enctype="multipart/form-data">
             <input type="text" name="title" placeholder="Poll Title" required>
             <div id="candidates-container">
                 <div class="candidate">
                     <input type="text" name="candidates[]" placeholder="Candidate Name" required>
-                    <input type="file" name="candidate_images[]" accept="image/*" required> <!-- Image upload for each candidate -->
+                    <input type="file" name="candidate_images[]" required>
                 </div>
             </div>
             <button type="button" id="add-candidate">Add Another Candidate</button>
@@ -115,21 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             var container = document.getElementById('candidates-container');
             var candidateDiv = document.createElement('div');
             candidateDiv.className = 'candidate';
-
-            var inputName = document.createElement('input');
-            inputName.type = 'text';
-            inputName.name = 'candidates[]';
-            inputName.placeholder = 'Candidate Name';
-            inputName.required = true;
-
-            var inputImage = document.createElement('input');
-            inputImage.type = 'file';
-            inputImage.name = 'candidate_images[]';
-            inputImage.accept = 'image/*';
-            inputImage.required = true;
-
-            candidateDiv.appendChild(inputName);
-            candidateDiv.appendChild(inputImage);
+            candidateDiv.innerHTML = `
+                <input type="text" name="candidates[]" placeholder="Candidate Name" required>
+                <input type="file" name="candidate_images[]" required>
+            `;
             container.appendChild(candidateDiv);
         };
     </script>
