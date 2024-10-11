@@ -56,6 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             background-color: #f4f4f4;
             padding: 20px;
         }
+        h1{
+            text-align: center;
+        }
         form {
             background-color: white;
             padding: 20px;

@@ -102,12 +102,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['vote'])) {
             max-width: 100px; /* Set a max width for images */
             border-radius: 5px;
         }
+        
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            position: relative; 
+            bottom: 0; 
+            width: 100%; 
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Available Polls</h1>
-        
+
         <!-- Add Logout Button -->
         <form action="logout.php" method="POST" style="display: inline;">
             <button type="submit" class="logout-button">Logout</button>
@@ -140,5 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['vote'])) {
             </div>
         <?php endforeach; ?>
     </main>
+
+    <footer>
+        <p>&copy; 2021 Online Voting System Admin Panel. All rights reserved.</p>
+    </footer>
 </body>
 </html>

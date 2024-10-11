@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../db.php'; // Adjust the path to your database connection
+include '../db.php'; 
 
 // Check if the poll ID is set
 if (!isset($_GET['id'])) {

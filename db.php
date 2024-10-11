@@ -1,6 +1,6 @@
 <?php
-// Database connection using PDO
-$host = 'localhost'; // or your database host
+
+$host = 'localhost';
 $dbname = 'voting_system';
 $username = 'root';
 $password = '';

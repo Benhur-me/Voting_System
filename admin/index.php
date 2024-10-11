@@ -40,36 +40,36 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
         }
 
         header {
-            background-color: #007BFF; /* Bootstrap Primary Color */
+            background-color: #007BFF; 
             color: white;
             padding: 20px;
             text-align: center;
         }
 
         nav ul {
-            list-style: none; /* Remove default list styling */
+            list-style: none; 
             padding: 0;
         }
 
         nav ul li {
-            display: inline; /* Horizontal list */
-            margin-right: 20px; /* Space between items */
+            display: inline; 
+            margin-right: 20px; 
         }
 
         nav ul li a {
             color: white;
-            text-decoration: none; /* No underline */
+            text-decoration: none; 
         }
 
         nav .logout-button {
-            background-color: #dc3545; /* Bootstrap Danger Color */
+            background-color: #dc3545; 
             padding: 10px 15px;
             border-radius: 5px;
             color: white;
         }
 
         nav .logout-button:hover {
-            background-color: #c82333; /* Darker shade on hover */
+            background-color: #c82333; 
         }
 
         main {
@@ -84,28 +84,28 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
         }
 
         table {
-            width: 100%; /* Full width */
-            border-collapse: collapse; /* Remove space between borders */
+            width: 100%; 
+            border-collapse: collapse; 
         }
 
         th, td {
-            border: 1px solid #ddd; /* Border for table cells */
-            padding: 8px; /* Padding inside table cells */
-            text-align: left; /* Align text to the left */
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
         }
 
         th {
-            background-color: #f2f2f2; /* Light gray background for header */
+            background-color: #f2f2f2; 
         }
 
         footer {
             text-align: center;
             padding: 10px;
-            background-color: #007BFF; /* Same color as header */
+            background-color: #007BFF;
             color: white;
-            position: relative; /* To position the footer */
-            bottom: 0; /* Align footer to bottom */
-            width: 100%; /* Full width */
+            position: relative; 
+            bottom: 0; 
+            width: 100%; 
         }
     </style>
 </head>
@@ -151,7 +151,7 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
     </main>
 
     <footer>
-        <p>&copy; 2024 Online Voting System Admin Panel. All rights reserved.</p>
+        <p>&copy; 2021 Online Voting System Admin Panel. All rights reserved.</p>
     </footer>
 </body>
 </html>
