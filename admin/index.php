@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../db.php';
+include '../db.php'; // Include the database connection
 
 // Check if admin is logged in
 if (!isset($_SESSION['admin_logged_in'])) {
@@ -9,15 +9,26 @@ if (!isset($_SESSION['admin_logged_in'])) {
 }
 
 // Fetch polls from the database
-$query = $pdo->query("SELECT * FROM polls WHERE status = 'active'");
+$query = $pdo->query("SELECT * FROM polls");
 $polls = $query->fetchAll(PDO::FETCH_ASSOC);
 
 // Handle delete request
 if (isset($_GET['delete'])) {
     $poll_id = intval($_GET['delete']);
-    $delete_query = $pdo->prepare("UPDATE polls SET status = 'deleted' WHERE id = ?");
+    
+    // Delete related candidates and votes first
+    $delete_candidates_query = $pdo->prepare("DELETE FROM candidates WHERE poll_id = ?");
+    $delete_candidates_query->execute([$poll_id]);
+
+    $delete_votes_query = $pdo->prepare("DELETE FROM votes WHERE poll_id = ?");
+    $delete_votes_query->execute([$poll_id]);
+
+    // Now delete the poll itself
+    $delete_query = $pdo->prepare("DELETE FROM polls WHERE id = ?");
     $delete_query->execute([$poll_id]);
-    header("Location: index.php"); // Redirect after deletion
+
+    // Redirect back to admin panel
+    header("Location: index.php"); 
     exit();
 }
 
@@ -40,36 +51,36 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
         }
 
         header {
-            background-color: #007BFF; 
+            background-color: #007BFF;
             color: white;
             padding: 20px;
             text-align: center;
         }
 
         nav ul {
-            list-style: none; 
+            list-style: none;
             padding: 0;
         }
 
         nav ul li {
-            display: inline; 
-            margin-right: 20px; 
+            display: inline;
+            margin-right: 20px;
         }
 
         nav ul li a {
             color: white;
-            text-decoration: none; 
+            text-decoration: none;
         }
 
         nav .logout-button {
-            background-color: #dc3545; 
+            background-color: #dc3545;
             padding: 10px 15px;
             border-radius: 5px;
             color: white;
         }
 
         nav .logout-button:hover {
-            background-color: #c82333; 
+            background-color: #c82333;
         }
 
         main {
@@ -84,18 +95,18 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
         }
 
         table {
-            width: 100%; 
-            border-collapse: collapse; 
+            width: 100%;
+            border-collapse: collapse;
         }
 
         th, td {
-            border: 1px solid #ddd; 
-            padding: 8px; 
-            text-align: left; 
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
         }
 
         th {
-            background-color: #f2f2f2; 
+            background-color: #f2f2f2;
         }
 
         footer {
@@ -103,9 +114,9 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
             padding: 10px;
             background-color: #007BFF;
             color: white;
-            position: relative; 
-            bottom: 0; 
-            width: 100%; 
+            position: relative;
+            bottom: 0;
+            width: 100%;
         }
     </style>
 </head>
@@ -141,7 +152,7 @@ $welcome_message = isset($_SESSION['welcome_message']) ? $_SESSION['welcome_mess
                             <td><?php echo htmlspecialchars($poll['title']); ?></td>
                             <td>
                                 <a href="edit_poll.php?id=<?php echo $poll['id']; ?>">Edit</a>
-                                <a href="index.php?delete=<?php echo $poll['id']; ?>" onclick="return confirm('Are you sure you want to delete this poll?');">Delete</a>
+                                <a href="index.php?delete=<?php echo $poll['id']; ?>" onclick="return confirm('Are you sure?');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
